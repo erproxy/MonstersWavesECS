@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 600d915d2d004b3c850bb6f717530b68, type: 3}
+  m_Name: SpawnReferenceSO
+  m_EditorClassIdentifier: 
+  _unitTypeToSpawns:
+  - <PoolObjectEnum>k__BackingField: 2
+    <Prefab>k__BackingField: {fileID: 9154449215664704365, guid: 29a2f4eca697952459ae03a1b3350052, type: 3}
+  - <PoolObjectEnum>k__BackingField: 3
+    <Prefab>k__BackingField: {fileID: 2673972982190631666, guid: b7d542345ed81fd46bf6f3204894e2c2, type: 3}
+  - <PoolObjectEnum>k__BackingField: 4
+    <Prefab>k__BackingField: {fileID: 4550406644879526806, guid: 72b56eea77879a743922c5225b1ddf8b, type: 3}

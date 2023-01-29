@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0283d01880e420eb9645e16b2567e77, type: 3}
+  m_Name: InializePoolDataSO
+  m_EditorClassIdentifier: 
+  <BulletInitializeDataPool>k__BackingField:
+    <Damage>k__BackingField: 5
+    <TimerLife>k__BackingField: 2
+  <PlayerInitializeDataPool>k__BackingField:
+    <Health>k__BackingField: 100
+    <Armor>k__BackingField: 0.75
+    <Speed>k__BackingField: 25
+  _enemyInitializeDataPool:
+  - <PoolObjectEnum>k__BackingField: 3
+    <Damage>k__BackingField: 2
+    <Health>k__BackingField: 0
+    <Armor>k__BackingField: 0
+    <Speed>k__BackingField: 0
