@@ -6,8 +6,13 @@ namespace Code.Models
 {
     public class ReInitializerEntitiesPoolSystem
     {
-        public void ReInitializeByType(ref EcsEntity entity, PoolObjectEnum poolObjectEnum,
-            InializePoolDataSO inializePoolDataSo)
+        private readonly InializePoolDataSO _initializePoolDataSo = null;
+        public ReInitializerEntitiesPoolSystem(InializePoolDataSO initializePoolDataSo)
+        {
+            _initializePoolDataSo = initializePoolDataSo;
+        }
+
+        public void ReInitializeByType(ref EcsEntity entity, PoolObjectEnum poolObjectEnum)
         {
             switch (poolObjectEnum)
             {

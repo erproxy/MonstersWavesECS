@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Code.Ecs.Systems
 {
-    public class SceneSpawnPoolSystem :  IEcsRunSystem
+    public class SceneSpawnPoolSystem :  IEcsInitSystem, IEcsRunSystem
     {
         #region fields
         private readonly SpawnReferenceSO _spawnReferenceSo = null;
@@ -23,8 +23,15 @@ namespace Code.Ecs.Systems
         private readonly EcsFilter<NeedToDestroyEvent, PoolComponent> _needToDestroyFilter = null;
         private readonly EcsWorld _world = null;
 
-        private ReInitializerEntitiesPoolSystem _reInitializerEntities = new ReInitializerEntitiesPoolSystem();
+        private ReInitializerEntitiesPoolSystem _reInitializerEntities;
+        private SpawnInitializeEntity _spawnInitializeEntity;
         #endregion
+        
+        public void Init()
+        {
+            _reInitializerEntities = new ReInitializerEntitiesPoolSystem(_initializePoolDataSo);
+            _spawnInitializeEntity = new SpawnInitializeEntity(_initializePoolDataSo, _world);
+        }
         
         public void Run()
         {
@@ -53,17 +60,17 @@ namespace Code.Ecs.Systems
                         ref var deadpoolObjectEnum = ref deadEntityPoolComponent.poolObjectEnum;
                         ref var deadTransform = ref deadEntityPoolComponent.transform;
                         
-                        if (deadpoolObjectEnum == go.poolObjectEnum)
-                        {
-                            deadTransform.position = go.position;
-                            deadTransform.rotation = go.quaternion;
-                            deadTransform.SetParent(_sceneEnvironment.DynamicParent);
-                            deadEntity.Del<IsDestroyedTag>();
-                            _reInitializerEntities.ReInitializeByType(ref deadEntity, go.poolObjectEnum, _initializePoolDataSo);
-                            isSpawned = true;
-                            var gun = _world.NewEntity();
-                            break;
-                        }
+                        // if (deadpoolObjectEnum == go.poolObjectEnum)
+                        // {
+                        //     deadTransform.position = go.position;
+                        //     deadTransform.rotation = go.quaternion;
+                        //     deadTransform.SetParent(_sceneEnvironment.DynamicParent);
+                        //     deadEntity.Del<IsDestroyedTag>();
+                        //     _reInitializerEntities.ReInitializeByType(ref deadEntity, go.poolObjectEnum, _initializePoolDataSo);
+                        //     isSpawned = true;
+                        //     var gun = _world.NewEntity();
+                        //     break;
+                        // }
                     }
 
                     if (!isSpawned)
@@ -71,12 +78,10 @@ namespace Code.Ecs.Systems
                         var spawnRef = _spawnReferenceSo.UnitTypeToSpawns.FirstOrDefault(entityReference => 
                             entityReference.PoolObjectEnum == go.poolObjectEnum);
 
-                        var st = Object.Instantiate(spawnRef.Prefab, go.position, go.quaternion,
+                        var goGameObject = Object.Instantiate(spawnRef.Prefab, go.position, go.quaternion,
                             _sceneEnvironment.DynamicParent);
-                        var st1 = st.GetComponent<EntityReference>();
-                        var st2 = st1.Entity;
-                        var st3 = st2.Get<GunFireEvent>();
-                       //_reInitializerEntities.ReInitializeByType(ref deadEntity, go.poolObjectEnum, _inializePoolDataSO);
+
+                        _spawnInitializeEntity.InitializeEntity(go.poolObjectEnum, goGameObject);
                         
                         isSpawned = false;
                     }
@@ -96,5 +101,6 @@ namespace Code.Ecs.Systems
             }
         }
         #endregion
+        
     }
 }
