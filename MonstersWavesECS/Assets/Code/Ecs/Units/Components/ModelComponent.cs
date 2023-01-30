@@ -3,10 +3,9 @@ using UnityEngine;
 
 namespace Code.Ecs.Units.Components
 {
-    [Serializable]
-    public struct ModelComponent
+    internal struct ModelComponent
     {
-        public Transform modelTransform;
-        public Transform bodyTransform;
+        public Transform ModelTransform;
+        public Transform BodyTransform;
     }
 }

@@ -19,3 +19,5 @@ MonoBehaviour:
     <Prefab>k__BackingField: {fileID: 2673972982190631666, guid: b7d542345ed81fd46bf6f3204894e2c2, type: 3}
   - <PoolObjectEnum>k__BackingField: 4
     <Prefab>k__BackingField: {fileID: 4550406644879526806, guid: 72b56eea77879a743922c5225b1ddf8b, type: 3}
+  - <PoolObjectEnum>k__BackingField: 1
+    <Prefab>k__BackingField: {fileID: 2058450427938255431, guid: 2c9abb6b79671084cac9c17df0284144, type: 3}

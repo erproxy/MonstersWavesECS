@@ -1,13 +1,11 @@
-﻿using System;
-using Code.Models;
+﻿using Code.Models;
 using UnityEngine;
 
 namespace Code.Ecs.Components
 {
-    [Serializable]
-    public struct PoolComponent
+    internal struct PoolComponent
     {
-        public PoolObjectEnum poolObjectEnum;
-        public Transform transform;
+        public PoolObjectEnum PoolObjectEnum;
+        public Transform Transform;
     }
 }

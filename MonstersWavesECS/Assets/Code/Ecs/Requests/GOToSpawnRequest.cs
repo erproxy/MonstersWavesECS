@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using Code.Models;
+﻿using Code.Models;
+using UnityEngine;
 
 namespace Code.Ecs.Requests
 {
     internal struct GOToSpawnRequest
     {
-        public Stack<GoToSpawn> GoToSpawns;
+        public PoolObjectEnum PoolObjectEnum;
+        public Vector3 Position;
+        public Quaternion Quaternion;
     }
 }

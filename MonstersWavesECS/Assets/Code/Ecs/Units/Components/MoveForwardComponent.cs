@@ -1,12 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Code.Ecs.Units.Components
 {
-    [Serializable]
-    public struct MoveForwardComponent
+    internal struct MoveForwardComponent
     {
-        public Transform modelTransform;
-        public float speed;
+        public Transform ModelTransform;
+        public float Speed;
     }
 }

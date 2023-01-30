@@ -2,5 +2,5 @@
 
 namespace Code.Ecs.Tags
 {
-    public struct MouseRotationTag : IEcsIgnoreInFilter  { }
+    internal struct MouseRotationTag : IEcsIgnoreInFilter  { }
 }

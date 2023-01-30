@@ -6,7 +6,6 @@ using Code.Ecs.Units.Components;
 using Code.Models;
 using Code.MonoBehaviours.World;
 using Code.SO;
-using Code.Test;
 using Leopotam.Ecs;
 using UnityEngine;
 
@@ -19,7 +18,7 @@ namespace Code.Ecs.Systems
         private readonly SceneEnvironment _sceneEnvironment = null;
         private readonly InializePoolDataSO _initializePoolDataSo = null;
         
-        private readonly EcsFilter<ScenePoolSpawnerTag, GOToSpawnRequest> _spawnFilter = null;
+        private readonly EcsFilter<GOToSpawnRequest> _spawnFilter = null;
         private readonly EcsFilter<NeedToDestroyEvent, PoolComponent> _needToDestroyFilter = null;
         private readonly EcsWorld _world = null;
 
@@ -44,48 +43,47 @@ namespace Code.Ecs.Systems
         {
             foreach (var i in _spawnFilter)
             {
-                ref var goToSpawn = ref _spawnFilter.Get2(i);
+                ref var entitySpawn = ref _spawnFilter.GetEntity(i);
+                ref var goToSpawnRequest = ref _spawnFilter.Get1(i);
+                var poolObjectEnumToSpawn =  goToSpawnRequest.PoolObjectEnum;
                 
                 var isDeadFilter =
                     _world.GetFilter(typeof(EcsFilter<PoolComponent, IsDestroyedTag>.Exclude<NeedToDestroyEvent>));
 
                 bool isSpawned = false;
-                foreach (var go in goToSpawn.GoToSpawns)
+                foreach (var j in isDeadFilter)
                 {
-                    foreach (var j in isDeadFilter)
-                    {
-                        ref var deadEntity = ref isDeadFilter.GetEntity(j);
-                        ref var deadEntityPoolComponent = ref deadEntity.Get<PoolComponent>();
+                    ref var deadEntity = ref isDeadFilter.GetEntity(j);
+                    ref var deadEntityPoolComponent = ref deadEntity.Get<PoolComponent>();
 
-                        ref var deadpoolObjectEnum = ref deadEntityPoolComponent.poolObjectEnum;
-                        ref var deadTransform = ref deadEntityPoolComponent.transform;
+                    ref var deadpoolObjectEnum = ref deadEntityPoolComponent.PoolObjectEnum;
+                    ref var deadTransform = ref deadEntityPoolComponent.Transform;
                         
-                        // if (deadpoolObjectEnum == go.poolObjectEnum)
-                        // {
-                        //     deadTransform.position = go.position;
-                        //     deadTransform.rotation = go.quaternion;
-                        //     deadTransform.SetParent(_sceneEnvironment.DynamicParent);
-                        //     deadEntity.Del<IsDestroyedTag>();
-                        //     _reInitializerEntities.ReInitializeByType(ref deadEntity, go.poolObjectEnum, _initializePoolDataSo);
-                        //     isSpawned = true;
-                        //     var gun = _world.NewEntity();
-                        //     break;
-                        // }
-                    }
-
-                    if (!isSpawned)
+                    if (deadpoolObjectEnum == goToSpawnRequest.PoolObjectEnum)
                     {
-                        var spawnRef = _spawnReferenceSo.UnitTypeToSpawns.FirstOrDefault(entityReference => 
-                            entityReference.PoolObjectEnum == go.poolObjectEnum);
-
-                        var goGameObject = Object.Instantiate(spawnRef.Prefab, go.position, go.quaternion,
-                            _sceneEnvironment.DynamicParent);
-
-                        _spawnInitializeEntity.InitializeEntity(go.poolObjectEnum, goGameObject);
+                        deadTransform.position = goToSpawnRequest.Position;
+                        deadTransform.rotation = goToSpawnRequest.Quaternion;
+                        deadTransform.SetParent(_sceneEnvironment.DynamicParent);
+                        deadEntity.Del<IsDestroyedTag>();
                         
-                        isSpawned = false;
+                        _reInitializerEntities.ReInitializeByType(ref deadEntity, poolObjectEnumToSpawn);
+                        
+                        isSpawned = true;
+                        break;
                     }
                 }
+
+                if (!isSpawned)
+                {
+                    var spawnRef = _spawnReferenceSo.CallbackUnityType(poolObjectEnumToSpawn);
+
+                    var goGameObject = Object.Instantiate(spawnRef.Prefab, goToSpawnRequest.Position, goToSpawnRequest.Quaternion,
+                        _sceneEnvironment.DynamicParent);
+
+                    _spawnInitializeEntity.InitializeEntity(goToSpawnRequest.PoolObjectEnum, goGameObject);
+                }
+                
+                entitySpawn.Destroy();
             }
         }
         
@@ -95,8 +93,9 @@ namespace Code.Ecs.Systems
             {
                 ref var entity = ref _needToDestroyFilter.GetEntity(i);
                 entity.Get<IsDestroyedTag>();
+                entity.Del<NeedToDestroyEvent>();
                 ref var poolComponent = ref entity.Get<PoolComponent>();
-                ref var transform = ref poolComponent.transform;
+                ref var transform = ref poolComponent.Transform;
                 transform.SetParent(_sceneEnvironment.NonActiveParent);
             }
         }

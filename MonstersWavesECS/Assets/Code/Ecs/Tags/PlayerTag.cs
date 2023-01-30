@@ -2,5 +2,5 @@
 
 namespace Code.Ecs.Tags
 {
-    public struct PlayerTag : IEcsIgnoreInFilter  { }
+    internal struct PlayerTag : IEcsIgnoreInFilter  { }
 }

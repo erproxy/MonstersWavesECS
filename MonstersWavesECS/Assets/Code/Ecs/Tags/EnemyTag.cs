@@ -2,5 +2,5 @@
 
 namespace Code.Ecs.Tags
 {
-    public struct EnemyTag : IEcsIgnoreInFilter  { }
+    internal struct EnemyTag : IEcsIgnoreInFilter  { }
 }

@@ -2,5 +2,5 @@
 
 namespace Code.Ecs.Tags
 {
-    public struct IsDestroyedTag : IEcsIgnoreInFilter  { }
+    internal struct IsDestroyedTag : IEcsIgnoreInFilter  { }
 }

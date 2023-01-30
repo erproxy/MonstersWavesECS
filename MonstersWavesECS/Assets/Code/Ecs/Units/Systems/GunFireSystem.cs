@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Code.Ecs.Components;
+﻿using Code.Ecs.Components;
 using Code.Ecs.Requests;
 using Code.Ecs.Tags;
 using Code.Ecs.Units.Components;
@@ -8,33 +7,38 @@ using Leopotam.Ecs;
 
 namespace Code.Ecs.Units.Systems
 {
-    public class GunFireSystem : IEcsRunSystem
+    public class GunFireSystem : IEcsInitSystem, IEcsRunSystem
     {
-        private readonly EcsFilter <GunTag, ModelComponent, GunFireEvent, DefaultTimeAttackComponent>.Exclude<IsDestroyedTag> _funFireFilter = null;
-        private readonly EcsFilter <ScenePoolSpawnerTag> _scenePoolSpawnerFilter = null;
+        private readonly EcsWorld _world = null;
+        private readonly EcsFilter <GunTag, ModelComponent, GunFireEvent, DefaultReloadingTimeComponent>.Exclude<IsDestroyedTag> _gunFireFilter = null;
+           
+        private EcsComponentRef<GameStateComponent> _gameStateRef;
+        public void Init()
+        {
+            var gameStateEntity = _world.GetFilter(typeof(EcsFilter<GameStateComponent>)).GetEntity(0);
+            _gameStateRef = gameStateEntity.Ref<GameStateComponent>();
+        }
         
         public void Run()
         {
-            foreach (var i in _funFireFilter)
+            if (_gameStateRef.Unref().GameStateEnum != GameStateEnum.Play)
             {
-                ref var entity = ref _funFireFilter.GetEntity(i);
-                ref var model = ref _funFireFilter.Get2(i);
-                ref var defaultTimeAttackComponent = ref _funFireFilter.Get4(i);
-                ref var defaultTime = ref defaultTimeAttackComponent.Time;
-                ref var getFirstSpawner = ref _scenePoolSpawnerFilter.GetEntity(0);
-                
-                ref var goToSpawnRequest = ref getFirstSpawner.Get<GOToSpawnRequest>();
-                    
-                goToSpawnRequest.GoToSpawns ??= new Stack<GoToSpawn>();
-                    
-                goToSpawnRequest.GoToSpawns.Push( new GoToSpawn
-                {
-                    poolObjectEnum = PoolObjectEnum.Bullet,
-                    position = model.bodyTransform.position,
-                    quaternion = model.bodyTransform.rotation
-                });
+                return;
+            }
 
-                entity.Get<ReloadingDurationRequest>().TimerReloading = 0;
+            foreach (var i in _gunFireFilter)
+            {
+                ref var entity = ref _gunFireFilter.GetEntity(i);
+                ref var model = ref _gunFireFilter.Get2(i);
+                ref var defaultTimeAttackComponent = ref _gunFireFilter.Get4(i);
+                ref var defaultTime = ref defaultTimeAttackComponent.Time;
+
+                ref var goToSpawnRequest = ref _world.NewEntity().Get<GOToSpawnRequest>();
+                goToSpawnRequest.PoolObjectEnum = PoolObjectEnum.Bullet;
+                goToSpawnRequest.Position = model.BodyTransform.position;
+                goToSpawnRequest.Quaternion = model.BodyTransform.rotation;
+                
+                entity.Get<ReloadingDurationRequest>().TimerReloading = defaultTime;
             }
         }
     }

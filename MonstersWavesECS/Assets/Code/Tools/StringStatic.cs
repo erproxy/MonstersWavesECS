@@ -2,6 +2,6 @@
 {
     public static class StringStatic
     {
-        public static string Game = nameof(Game);
+        public static string Player = nameof(Player);
     }
 }

@@ -13,15 +13,24 @@ MonoBehaviour:
   m_Name: InializePoolDataSO
   m_EditorClassIdentifier: 
   <BulletInitializeDataPool>k__BackingField:
-    <Damage>k__BackingField: 5
-    <TimerLife>k__BackingField: 2
+    <Damage>k__BackingField: 6
+    <LifeTimer>k__BackingField: 1.5
+    <Speed>k__BackingField: 25
   <PlayerInitializeDataPool>k__BackingField:
     <Health>k__BackingField: 100
     <Armor>k__BackingField: 0.75
-    <Speed>k__BackingField: 25
+    <Speed>k__BackingField: 27
+    <ReloadingTimer>k__BackingField: 0.4
   _enemyInitializeDataPool:
   - <PoolObjectEnum>k__BackingField: 3
-    <Damage>k__BackingField: 2
-    <Health>k__BackingField: 0
-    <Armor>k__BackingField: 0
-    <Speed>k__BackingField: 0
+    <Damage>k__BackingField: 3
+    <ReloadingTimer>k__BackingField: 0.3
+    <Health>k__BackingField: 20
+    <Armor>k__BackingField: 0.9
+    <Speed>k__BackingField: 20
+  - <PoolObjectEnum>k__BackingField: 4
+    <Damage>k__BackingField: 30
+    <ReloadingTimer>k__BackingField: 1.5
+    <Health>k__BackingField: 40
+    <Armor>k__BackingField: 0.4
+    <Speed>k__BackingField: 10

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code.Ecs.Units.Systems
 {
-    public class ReloadingSystem : IEcsRunSystem
+    public class ReloadingSystem :  IEcsRunSystem
     {
         private readonly EcsFilter <ReloadingDurationRequest> _reloadingFilter = null;
         

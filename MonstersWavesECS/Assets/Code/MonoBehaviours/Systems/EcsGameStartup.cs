@@ -1,10 +1,10 @@
-using Code.Ecs.Components;
+using System;
 using Code.Ecs.Requests;
 using Code.Ecs.Systems;
+using Code.Ecs.Ui.Systems;
 using Code.Ecs.Units.Systems;
 using Code.MonoBehaviours.World;
 using Code.SO;
-using Code.Test;
 using Leopotam.Ecs;
 using UnityEngine;
 using Voody.UniLeo;
@@ -17,23 +17,27 @@ namespace Code.MonoBehaviours.Systems
         [SerializeField] private SceneEnvironment _sceneEnvironment;
         [SerializeField] private EnemySpawnChanceSO _enemySpawnChanceSo;
         [SerializeField] private InializePoolDataSO _initializePoolDataSo;
+        [SerializeField] private ScoreDataSO _scoreDataSO;
+        
         private EcsWorld _world;
         private EcsSystems _systems;
+        private EcsSystems _systemsFixedUpdate;
 
         private void Start()
         {
             _world = new EcsWorld();
             _systems = new EcsSystems(_world);
+            _systemsFixedUpdate = new EcsSystems(_world);
             
             _systems.ConvertScene();
+            _systemsFixedUpdate.ConvertScene();
             
             AddInjections();
             AddOneFrames();
             AddSystems();
             
             _systems.Init();
-            // DontDestroyOnLoad(this);
-            // SceneManager.LoadScene(StringStatic.Game);
+            _systemsFixedUpdate.Init();
         }
 
         private void Update()
@@ -41,22 +45,37 @@ namespace Code.MonoBehaviours.Systems
             _systems.Run();
         }
 
+        private void FixedUpdate()
+        {
+            _systemsFixedUpdate.Run();
+        }
+
         private void AddInjections()
         {
+            _systemsFixedUpdate.
+                Inject(_sceneEnvironment).
+                Inject(_enemySpawnChanceSo);
+            
             _systems.
                 Inject(_sceneEnvironment).
                 Inject(_enemySpawnChanceSo).
                 Inject(_initializePoolDataSo).
+                Inject(_scoreDataSO).
                 Inject(_spawnReferenceSo);
         }
         
         private void AddSystems()
         {
-            _systems.
-                Add(new InputSystem()).
+            _systemsFixedUpdate.
                 Add(new EnemySpawnerSystem()).
+                Add(new PlayerSpawnerSystem());
+            
+            _systems.
+                Add(new EntityInitializeSystem()).
+                Add(new InputSystem()).
                 Add(new EnemyCalculatingMovementSystem()).
                 Add(new BulletsAttackSystem()).
+                Add(new AttackMeleeCollisionSystem()).
                 Add(new ReloadingSystem()).
                 Add(new MovementSystem()).
                 Add(new MouseRotationSystem()).
@@ -64,16 +83,17 @@ namespace Code.MonoBehaviours.Systems
                 Add(new MoveForwardSystem()).
                 Add(new AttackingSystem()).
                 Add(new LifeTimerSystem()).
+                Add(new CalculatingScoreSystem()).
                 Add(new SceneSpawnPoolSystem()).
-                Add(new EntityInitializeSystem());
+                Add(new UiControlSystem()).
+                Add(new GameStateSystem());
         }
 
         private void AddOneFrames()
         {
             _systems.
-                OneFrame<GOToSpawnRequest>().
-                OneFrame<NeedToDestroyEvent>().
                 OneFrame<ObjectAttackedRequest>().
+                OneFrame<EnemyKilledRequest>().
                 OneFrame<GunFireEvent>();
         }
 

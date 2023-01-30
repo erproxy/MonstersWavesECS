@@ -2,5 +2,5 @@
 
 namespace Code.Ecs.Tags
 {
-    public struct BulletTag : IEcsIgnoreInFilter  { }
+    internal struct BulletTag : IEcsIgnoreInFilter  { }
 }
