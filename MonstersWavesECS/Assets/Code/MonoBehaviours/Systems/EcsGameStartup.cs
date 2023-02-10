@@ -1,4 +1,3 @@
-using System;
 using Code.Ecs.Requests;
 using Code.Ecs.Systems;
 using Code.Ecs.Ui.Systems;
@@ -21,38 +20,34 @@ namespace Code.MonoBehaviours.Systems
         
         private EcsWorld _world;
         private EcsSystems _systems;
-        private EcsSystems _systemsFixedUpdate;
+        private EcsSystems _systemsSpawner;
 
         private void Start()
         {
             _world = new EcsWorld();
             _systems = new EcsSystems(_world);
-            _systemsFixedUpdate = new EcsSystems(_world);
+            _systemsSpawner = new EcsSystems(_world);
             
             _systems.ConvertScene();
-            _systemsFixedUpdate.ConvertScene();
+            _systemsSpawner.ConvertScene();
             
             AddInjections();
             AddOneFrames();
             AddSystems();
             
             _systems.Init();
-            _systemsFixedUpdate.Init();
+            _systemsSpawner.Init();
         }
 
         private void Update()
         {
             _systems.Run();
-        }
-
-        private void FixedUpdate()
-        {
-            _systemsFixedUpdate.Run();
+            _systemsSpawner.Run();
         }
 
         private void AddInjections()
         {
-            _systemsFixedUpdate.
+            _systemsSpawner.
                 Inject(_sceneEnvironment).
                 Inject(_enemySpawnChanceSo);
             
@@ -66,7 +61,7 @@ namespace Code.MonoBehaviours.Systems
         
         private void AddSystems()
         {
-            _systemsFixedUpdate.
+            _systemsSpawner.
                 Add(new EnemySpawnerSystem()).
                 Add(new PlayerSpawnerSystem());
             
